@@ -1,6 +1,7 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
-import {FaTelegramPlane, FaXTwitter, FaMedium} from 'react-icons/fa6';
+import { FaTelegramPlane } from 'react-icons/fa';
+import { FaTwitter, FaMedium } from 'react-icons/fa';
 
 function LandingPage() {
   const navigate = useNavigate();
