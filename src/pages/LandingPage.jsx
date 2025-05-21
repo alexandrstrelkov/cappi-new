@@ -6,7 +6,7 @@ function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col justify-between">
+    <div className="g-gradient-to-br from-purple-700 via-purple-800 to-pink-700">
       
       {/* Header */}
       <header className="bg-gray-950 flex justify-between items-center px-6 py-4 shadow">
