@@ -49,7 +49,7 @@ function LandingPage() {
             <FaTelegramPlane />
           </a>
           <a href="https://x.com/cappi" target="_blank" rel="noopener noreferrer" className="hover:text-white">
-            <FaXTwitter />
+            <FaTwitter />
           </a>
           <a href="https://medium.com/@cappi" target="_blank" rel="noopener noreferrer" className="hover:text-white">
             <FaMedium />
