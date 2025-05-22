@@ -6,7 +6,12 @@ import data from '../data/data.json';
 function AppPage() {
   const [selectedRange, setSelectedRange] = useState(7);
 
-  const filteredData = data.slice(-selectedRange);
+  const filteredDataRaw = data.slice(-selectedRange);
+  const baseYield = filteredDataRaw[0]?.yield || 0;
+  const filteredData = filteredDataRaw.map((entry) => ({
+    ...entry,
+  yield: entry.yield - baseYield, // Прирост от начального значения
+  }));
 
   const latestTVL = data.length ? data[data.length - 1].tvl : 0;
   const last7DaysData = data.slice(-7);
