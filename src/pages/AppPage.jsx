@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaTelegramPlane, FaTwitter, FaMedium } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import data from '../public/data.json';
+import data from './public/data.json';
 
 function AppPage() {
   const [selectedRange, setSelectedRange] = useState(7);
