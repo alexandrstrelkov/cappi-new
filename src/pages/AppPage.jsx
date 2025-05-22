@@ -6,24 +6,24 @@ import data from '../data/data.json';
 function AppPage() {
   const [selectedRange, setSelectedRange] = useState(7);
 
+  // Отфильтровываем последние selectedRange дней
   const filteredDataRaw = data.slice(-selectedRange);
 
-// Считаем накопленную доходность:
-let accumulated = 1;
-const filteredData = filteredDataRaw.map((entry, index) => {
-  accumulated *= 1 + (entry.yield / 100); // Накапливаем
-  return {
-    ...entry,
-    yieldAccumulated: (accumulated - 1) * 100, // в %
-  };
-});
+  // Считаем накопленную доходность для графика (compound yield)
+  let accumulated = 1;
+  const filteredData = filteredDataRaw.map((entry) => {
+    accumulated *= 1 + entry.yield / 100;
+    return {
+      ...entry,
+      yieldAccumulated: (accumulated - 1) * 100,
+    };
+  });
 
   const latestTVL = data.length ? data[data.length - 1].tvl : 0;
-  const last7DaysData = data.slice(-7);
-  const yield7DaysAgo = last7DaysData.length > 0 ? last7DaysData[0].yield : 0;
-  const yieldNow = last7DaysData.length > 0 ? last7DaysData[last7DaysData.length - 1].yield : 0;
-  const sevenDayYield = yieldNow - yield7DaysAgo;
-  
+
+  // Новый расчёт: суммируем yield за выбранный период
+  const cumulativeYield = filteredDataRaw.reduce((acc, day) => acc + day.yield, 0);
+
   const handleRangeChange = (range) => {
     setSelectedRange(range);
   };
@@ -53,8 +53,8 @@ const filteredData = filteredDataRaw.map((entry, index) => {
               <p className="text-purple-800 text-2xl">${latestTVL.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-gray-500">7-Day Yield</p>
-              <p className="text-purple-800 text-2xl">{sevenDayYield.toFixed(2)}%</p>
+              <p className="text-gray-500">{selectedRange}-Day Yield</p>
+              <p className="text-purple-800 text-2xl">{cumulativeYield.toFixed(2)}%</p> {/* Здесь сумма yield */}
             </div>
           </div>
 
@@ -79,24 +79,22 @@ const filteredData = filteredDataRaw.map((entry, index) => {
           <div className="w-full h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-  <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
-  <YAxis stroke="#888" tick={false} axisLine={false} />
-  <Tooltip
-    formatter={(value, name) => {
-      if (name === 'Yield (%)') return [`${value.toFixed(2)}%`, name];
-      if (name === 'TVL') return [`$${value.toLocaleString()}`, name];
-      return [value, name];
-    }}
-  />
-  <Legend />
-  <Line type="monotone" dataKey="yieldAccumulated" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
-  <Line type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
-</LineChart>
-
+                <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
+                <YAxis stroke="#888" tick={false} axisLine={false} />
+                <Tooltip
+                  formatter={(value, name) => {
+                    if (name === 'Yield (%)') return [`${value.toFixed(2)}%`, name];
+                    if (name === 'TVL') return [`$${value.toLocaleString()}`, name];
+                    return [value, name];
+                  }}
+                />
+                <Legend />
+                <Line type="monotone" dataKey="yieldAccumulated" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
+                <Line type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
+              </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
-
 
         {/* Connect Wallet Again */}
         <button className="bg-purple-500 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-700 transition">
