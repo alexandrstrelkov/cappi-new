@@ -35,7 +35,7 @@ function AppPage() {
       {/* Main Content */}
       <main className="flex flex-col items-center px-4 py-12 space-y-12">
         {/* Vault Info */}
-        <div className="bg-gray-300 rounded-2xl shadow-lg p-8 w-full max-w-4xl text-center">
+        <div className="bg-gray-500 rounded-2xl shadow-lg p-8 w-full max-w-3xl text-center">
           <h2 className="text-3xl font-bold text-purple-700 mb-4">USDC Cappi Vault</h2>
           <div className="flex flex-col sm:flex-row justify-around text-lg font-semibold mb-6">
             <div>
