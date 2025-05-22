@@ -10,13 +10,13 @@ function AppPage() {
   const filteredDataRaw = data.slice(-selectedRange);
 
   // Считаем накопленную доходность для графика (compound yield)
-  let accumulated = 1;
+  let simpleSum = 0;
   const filteredData = filteredDataRaw.map((entry) => {
-    accumulated *= 1 + entry.yield / 100;
-    return {
-      ...entry,
-      yieldAccumulated: (accumulated - 1) * 100,
-    };
+  simpleSum += entry.yield;
+  return {
+    ...entry,
+    yieldAccumulated: simpleSum,
+  };
   });
 
   const latestTVL = data.length ? data[data.length - 1].tvl : 0;
