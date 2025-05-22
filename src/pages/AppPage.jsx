@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { FaTelegramPlane, FaTwitter, FaMedium } from 'react-icons/fa';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import data from '../data/data.json';
 
 function AppPage() {
   const [selectedRange, setSelectedRange] = useState(7);
 
-  const filteredData = data[selectedRange] || [];
+  const filteredData = data.slice(-selectedRange);
 
   const handleRangeChange = (range) => {
     setSelectedRange(range);
