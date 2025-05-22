@@ -33,12 +33,12 @@ function LandingPage() {
               Launch App
             </button>
             <a
-              href="#"
-              className="bg-transparent border border-white px-6 py-3 rounded-2xl font-semibold hover:bg-white hover:text-purple-700 transition"
+              href="#" className="bg-transparent border border-white px-6 py-3 rounded-2xl font-semibold hover:bg-white hover:text-purple-700 transition"
             >
-              Learn More
-            </a>
-          </div>
+    Learn More
+  </a>
+</div>
+
         </div>
       </main>
 
