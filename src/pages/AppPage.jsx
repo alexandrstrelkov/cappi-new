@@ -80,7 +80,13 @@ function AppPage() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
-                <YAxis stroke="#888" tick={false} axisLine={false} />
+              
+                {/* Y-axis for TVL (left) */}
+                <YAxis yAxisId="left" stroke="#ec4899" tick={false} axisLine={false} />
+              
+                {/* Y-axis for Yield (right) */}
+                <YAxis yAxisId="right" orientation="right" stroke="#a855f7" tick={false} axisLine={false} />
+              
                 <Tooltip
                   formatter={(value, name) => {
                     if (name === 'Yield (%)') return [`${value.toFixed(2)}%`, name];
@@ -89,8 +95,26 @@ function AppPage() {
                   }}
                 />
                 <Legend />
-                <Line type="monotone" dataKey="yieldAccumulated" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
-                <Line type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
+              
+                {/* Line for yield with its own Y-axis */}
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="yieldAccumulated"
+                  stroke="#a855f7"
+                  strokeWidth={2}
+                  name="Yield (%)"
+                />
+              
+                {/* Line for TVL with its own Y-axis */}
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="tvl"
+                  stroke="#ec4899"
+                  strokeWidth={2}
+                  name="TVL"
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
