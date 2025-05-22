@@ -21,7 +21,7 @@ function AppPage() {
           <div className="w-8 h-8 bg-purple-800 rounded-full"></div>
           <h1 className="text-xl font-semibold">Cappi Finance</h1>
         </div>
-        <button className="bg-purple-100 text-white font-bold px-4 py-2 rounded-xl hover:bg-purple-200 transition">
+        <button className="bg-purple-500 text-white font-bold px-4 py-2 rounded-xl hover:bg-purple-700 transition">
           Connect Wallet
         </button>
       </header>
@@ -75,7 +75,7 @@ function AppPage() {
         </div>
 
         {/* Connect Wallet Again */}
-        <button className="bg-purple-100 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-200 transition">
+        <button className="bg-purple-500 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-700 transition">
           Connect Wallet
         </button>
       </main>
