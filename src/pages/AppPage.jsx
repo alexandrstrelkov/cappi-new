@@ -8,6 +8,12 @@ function AppPage() {
 
   const filteredData = data.slice(-selectedRange);
 
+  const latestTVL = data.length ? data[data.length - 1].tvl : 0;
+  const last7DaysData = data.slice(-7);
+  const yield7DaysAgo = last7DaysData.length > 0 ? last7DaysData[0].yield : 0;
+  const yieldNow = last7DaysData.length > 0 ? last7DaysData[last7DaysData.length - 1].yield : 0;
+  const sevenDayYield = yieldNow - yield7DaysAgo;
+  
   const handleRangeChange = (range) => {
     setSelectedRange(range);
   };
@@ -34,11 +40,11 @@ function AppPage() {
           <div className="flex flex-col sm:flex-row justify-around text-lg font-semibold mb-6">
             <div>
               <p className="text-gray-500">Total Value Locked</p>
-              <p className="text-purple-800 text-2xl">$1,200,000</p>
+              <p className="text-purple-800 text-2xl">${latestTVL.toFixed(2)}</p>
             </div>
             <div>
               <p className="text-gray-500">7-Day Yield</p>
-              <p className="text-purple-800 text-2xl">+0.52%</p>
+              <p className="text-purple-800 text-2xl">{sevenDayYield.toFixed(2)}%</p>
             </div>
           </div>
 
