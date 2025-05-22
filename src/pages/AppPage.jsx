@@ -19,7 +19,7 @@ function AppPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex flex-col justify-between">
+    <div className="bg-gradient-to-br from-purple-700 via-purple-800 to-pink-700 min-h-screen text-white flex flex-col justify-between">
 
       {/* Header */}
       <header className="bg-gray-950 text-white flex justify-between items-center px-6 py-4 shadow">
@@ -35,7 +35,7 @@ function AppPage() {
       {/* Main Content */}
       <main className="flex flex-col items-center px-4 py-12 space-y-12">
         {/* Vault Info */}
-        <div className="bg-gray-100 rounded-2xl shadow-lg p-8 w-full max-w-4xl text-center">
+        <div className="bg-gray-300 rounded-2xl shadow-lg p-8 w-full max-w-4xl text-center">
           <h2 className="text-3xl font-bold text-purple-700 mb-4">USDC Cappi Vault</h2>
           <div className="flex flex-col sm:flex-row justify-around text-lg font-semibold mb-6">
             <div>
