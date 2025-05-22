@@ -23,12 +23,12 @@ function LandingPage() {
             Cappi Finance
           </h2>
           <p className="text-lg sm:text-xl mb-8 max-w-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mx-auto">
-            Earn daily yield with Cappi
+            Stake you USDC and earn daily yield with Cappi
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => navigate('/app')}
-              className="bg-white text-purple-700 font-semibold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-100 transition"
+              className="bg-purple-100 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-200 hover:shadow-xl transition"
             >
               Launch App
             </button>
