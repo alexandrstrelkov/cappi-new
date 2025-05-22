@@ -28,7 +28,7 @@ function LandingPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => navigate('/app')}
-              className="bg-purple-100 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-200 hover:shadow-xl transition"
+              className="bg-purple-500 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-700 hover:shadow-xl transition"
             >
               Launch App
             </button>
