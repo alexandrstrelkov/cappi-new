@@ -7,11 +7,16 @@ function AppPage() {
   const [selectedRange, setSelectedRange] = useState(7);
 
   const filteredDataRaw = data.slice(-selectedRange);
-  const baseYield = filteredDataRaw[0]?.yield || 0;
-  const filteredData = filteredDataRaw.map((entry) => ({
+
+// Считаем накопленную доходность:
+let accumulated = 1;
+const filteredData = filteredDataRaw.map((entry, index) => {
+  accumulated *= 1 + (entry.yield / 100); // Накапливаем
+  return {
     ...entry,
-  yield: entry.yield - baseYield, // Прирост от начального значения
-  }));
+    yieldAccumulated: (accumulated - 1) * 100, // в %
+  };
+});
 
   const latestTVL = data.length ? data[data.length - 1].tvl : 0;
   const last7DaysData = data.slice(-7);
@@ -74,19 +79,20 @@ function AppPage() {
           <div className="w-full h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
-                <YAxis stroke="#888" tick={false} axisLine={false} />
-                <Tooltip
-                  formatter={(value, name) => {
-                    if (name === 'Yield (%)') return [`${value.toFixed(2)}%`, name];
-                    if (name === 'TVL') return [`$${value.toLocaleString()}`, name];
-                    return [value, name];
-                  }}
-                />
-                <Legend />
-                <Line type="monotone" dataKey="yield" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
-                <Line type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
-              </LineChart>
+  <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
+  <YAxis stroke="#888" tick={false} axisLine={false} />
+  <Tooltip
+    formatter={(value, name) => {
+      if (name === 'Yield (%)') return [`${value.toFixed(2)}%`, name];
+      if (name === 'TVL') return [`$${value.toLocaleString()}`, name];
+      return [value, name];
+    }}
+  />
+  <Legend />
+  <Line type="monotone" dataKey="yieldAccumulated" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
+  <Line type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
+</LineChart>
+
             </ResponsiveContainer>
           </div>
         </div>
