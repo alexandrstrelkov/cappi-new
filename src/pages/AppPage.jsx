@@ -66,24 +66,24 @@ function AppPage() {
           </div>
 
           {/* Chart */}
-          <div className="w-full h-72">
-            <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
-            <YAxis stroke="#888" tick={false} axisLine={false} />
-              <Tooltip
-                formatter={(value, name) => {
-                  if (name === 'Yield (%)') return [`${value.toFixed(2)}%`, name];
-                  if (name === 'TVL') return [`$${value.toLocaleString()}`, name];
-                return [value, name];
-                }}
-              />
-          <Legend />
-            <Line type="monotone" dataKey="yield" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
-            <Line type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
-            </LineChart>
-            </ResponsiveContainer>
-          </div>
+<div className="w-full h-72">
+  <ResponsiveContainer width="100%" height="100%">
+    <LineChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+      <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
+      <YAxis stroke="#888" tick={false} axisLine={false} />
+      <Tooltip
+        formatter={(value, name) => {
+          if (name === 'Yield (%)') return [`${value.toFixed(2)}%`, name];
+          if (name === 'TVL') return [`$${value.toLocaleString()}`, name];
+          return [value, name];
+        }}
+      />
+      <Legend />
+      <Line type="monotone" dataKey="yield" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
+      <Line type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
+    </LineChart>
+  </ResponsiveContainer>
+</div>
 
         {/* Connect Wallet Again */}
         <button className="bg-purple-500 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-700 transition">
