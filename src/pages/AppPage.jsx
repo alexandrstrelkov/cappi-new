@@ -8,23 +8,18 @@ function AppPage() {
 
   const filteredDataRaw = data.slice(-selectedRange);
 
-  // Считаем накопленную доходность:
-  let accumulated = 1;
-  const filteredData = filteredDataRaw.map((entry, index) => {
-    accumulated *= 1 + (entry.yield / 100); // Накапливаем
+  let simpleSum = 0;
+  const filteredData = filteredDataRaw.map((entry) => {
+    simpleSum += entry.yield;
     return {
       ...entry,
-      yieldAccumulated: (accumulated - 1) * 100, // в %
+      yieldAccumulated: simpleSum,
     };
   });
 
   const latestTVL = data.length ? data[data.length - 1].tvl : 0;
-  const last7DaysData = data.slice(-7);
-  const sevenDayYield = last7DaysData.reduce((sum, entry) => sum + entry.yield, 0);
-
-  // Примерные пользовательские данные (заглушки)
-  const userStaked = 1200; // USDC
-  const userAccumulatedYield = 36.5; // %
+  const userStaked = 2000;
+  const userYield = userStaked * (simpleSum / 100);
 
   const handleRangeChange = (range) => {
     setSelectedRange(range);
@@ -32,7 +27,6 @@ function AppPage() {
 
   return (
     <div className="bg-gradient-to-br from-purple-700 via-purple-800 to-pink-700 min-h-screen text-white flex flex-col justify-between">
-
       {/* Header */}
       <header className="bg-gray-950 text-white flex justify-between items-center px-6 py-4 shadow">
         <div className="flex items-center space-x-3">
@@ -46,8 +40,8 @@ function AppPage() {
 
       {/* Main Content */}
       <main className="flex flex-col items-center px-4 py-12 space-y-12">
-        <div className="flex flex-col lg:flex-row gap-8 w-full max-w-6xl">
-          {/* Vault Info Block */}
+        <div className="flex flex-col lg:flex-row w-full max-w-6xl gap-8">
+          {/* Vault Info */}
           <div className="bg-gray-900 rounded-2xl shadow-lg p-8 flex-1">
             <h2 className="text-3xl font-bold text-purple-700 mb-4 text-center">USDC Cappi Vault</h2>
             <div className="flex flex-col sm:flex-row justify-around text-lg font-semibold mb-6">
@@ -56,12 +50,11 @@ function AppPage() {
                 <p className="text-purple-800 text-2xl">${latestTVL.toFixed(2)}</p>
               </div>
               <div>
-                <p className="text-gray-500">7-Day Yield</p>
-                <p className="text-purple-800 text-2xl">{sevenDayYield.toFixed(2)}%</p>
+                <p className="text-gray-500">{selectedRange}-Day Yield</p>
+                <p className="text-purple-800 text-2xl">{simpleSum.toFixed(2)}%</p>
               </div>
             </div>
 
-            {/* Range Selector */}
             <div className="flex justify-center space-x-4 mb-6">
               {[7, 30, 90].map((range) => (
                 <button
@@ -78,12 +71,12 @@ function AppPage() {
               ))}
             </div>
 
-            {/* Chart */}
             <div className="w-full h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                   <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
-                  <YAxis stroke="#888" tick={false} axisLine={false} />
+                  <YAxis yAxisId="left" stroke="#ec4899" tick={false} axisLine={false} />
+                  <YAxis yAxisId="right" orientation="right" stroke="#a855f7" tick={false} axisLine={false} />
                   <Tooltip
                     formatter={(value, name) => {
                       if (name === 'Yield (%)') return [`${value.toFixed(2)}%`, name];
@@ -92,42 +85,43 @@ function AppPage() {
                     }}
                   />
                   <Legend />
-                  <Line type="monotone" dataKey="yieldAccumulated" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
-                  <Line type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
+                  <Line yAxisId="right" type="monotone" dataKey="yieldAccumulated" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
+                  <Line yAxisId="left" type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          {/* User Dashboard Block */}
-          <div className="bg-gray-900 rounded-2xl shadow-lg p-8 w-full lg:w-[420px] flex flex-col space-y-6">
-            <h3 className="text-2xl font-bold text-purple-500 text-center">Your Dashboard</h3>
-            <div className="flex justify-between text-lg font-medium">
-              <span className="text-gray-400">Your Staked</span>
-              <span className="text-purple-400">${userStaked.toFixed(2)}</span>
+          {/* User Panel */}
+          <div className="bg-gray-900 rounded-2xl shadow-lg p-8 flex-1">
+            <h2 className="text-2xl font-bold text-purple-700 mb-4 text-center">Your Vault Stats</h2>
+            <div className="space-y-4 text-lg font-semibold text-center">
+              <p>
+                <span className="text-gray-400">You Staked:</span> ${userStaked.toFixed(2)}
+              </p>
+              <p>
+                <span className="text-gray-400">Your Yield:</span> ${userYield.toFixed(2)} ({simpleSum.toFixed(2)}%)
+              </p>
             </div>
-            <div className="flex justify-between text-lg font-medium">
-              <span className="text-gray-400">Your Yield</span>
-              <span className="text-purple-400">{userAccumulatedYield.toFixed(2)}%</span>
+
+            <div className="flex justify-center mt-6 gap-4">
+              <button className="bg-purple-600 hover:bg-purple-700 px-5 py-2 rounded-xl text-white font-bold">Deposit</button>
+              <button className="bg-pink-600 hover:bg-pink-700 px-5 py-2 rounded-xl text-white font-bold">Withdraw</button>
             </div>
-            <div className="flex gap-4">
-              <button className="flex-1 bg-purple-500 text-white py-2 rounded-xl hover:bg-purple-700 transition">Deposit</button>
-              <button className="flex-1 bg-white text-purple-700 py-2 rounded-xl hover:bg-purple-100 transition">Withdraw</button>
-            </div>
-            <div className="w-full h-48">
+
+            <div className="w-full h-64 mt-8">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={filteredData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                <LineChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                   <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
-                  <YAxis stroke="#888" tick={false} axisLine={false} />
+                  <YAxis stroke="#a855f7" tick={false} axisLine={false} />
                   <Tooltip formatter={(value) => [`${value.toFixed(2)}%`, 'Yield (%)']} />
-                  <Line type="monotone" dataKey="yieldAccumulated" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
+                  <Line type="monotone" dataKey="yieldAccumulated" stroke="#a855f7" strokeWidth={2} name="Your Yield (%)" />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
         </div>
 
-        {/* Connect Wallet Again */}
         <button className="bg-purple-500 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-700 transition">
           Connect Wallet
         </button>
@@ -135,9 +129,9 @@ function AppPage() {
 
       {/* Footer */}
       <footer className="bg-gray-950 px-6 py-6 text-sm text-white/80 flex flex-col items-center space-y-4">
-        <p className="text-center max-w-xl">
+        <div className="text-center max-w-xl">
           A secure DeFi protocol with a fixed 0.05–0.1% daily return. Stake your USDC and watch your balance grow — simple, predictable, and transparent.
-        </p>
+        </div>
         <div className="flex space-x-6 text-xl">
           <a href="https://t.me/cappi" target="_blank" rel="noopener noreferrer" className="hover:text-white">
             <FaTelegramPlane />
@@ -150,7 +144,6 @@ function AppPage() {
           </a>
         </div>
       </footer>
-
     </div>
   );
 }
