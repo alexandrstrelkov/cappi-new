@@ -6,23 +6,25 @@ import data from '../data/data.json';
 function AppPage() {
   const [selectedRange, setSelectedRange] = useState(7);
 
-  // Отфильтровываем последние selectedRange дней
   const filteredDataRaw = data.slice(-selectedRange);
 
-  // Считаем накопленную доходность для графика (compound yield)
-  let simpleSum = 0;
-  const filteredData = filteredDataRaw.map((entry) => {
-  simpleSum += entry.yield;
-  return {
-    ...entry,
-    yieldAccumulated: simpleSum,
-  };
+  // Считаем накопленную доходность:
+  let accumulated = 1;
+  const filteredData = filteredDataRaw.map((entry, index) => {
+    accumulated *= 1 + (entry.yield / 100); // Накапливаем
+    return {
+      ...entry,
+      yieldAccumulated: (accumulated - 1) * 100, // в %
+    };
   });
 
   const latestTVL = data.length ? data[data.length - 1].tvl : 0;
+  const last7DaysData = data.slice(-7);
+  const sevenDayYield = last7DaysData.reduce((sum, entry) => sum + entry.yield, 0);
 
-  // Новый расчёт: суммируем yield за выбранный период
-  const cumulativeYield = filteredDataRaw.reduce((acc, day) => acc + day.yield, 0);
+  // Примерные пользовательские данные (заглушки)
+  const userStaked = 1200; // USDC
+  const userAccumulatedYield = 36.5; // %
 
   const handleRangeChange = (range) => {
     setSelectedRange(range);
@@ -44,79 +46,84 @@ function AppPage() {
 
       {/* Main Content */}
       <main className="flex flex-col items-center px-4 py-12 space-y-12">
-        {/* Vault Info */}
-        <div className="bg-gray-900 rounded-2xl shadow-lg p-8 w-full max-w-2xl text-center">
-          <h2 className="text-3xl font-bold text-purple-700 mb-4">USDC Cappi Vault</h2>
-          <div className="flex flex-col sm:flex-row justify-around text-lg font-semibold mb-6">
-            <div>
-              <p className="text-gray-500">Total Value Locked</p>
-              <p className="text-purple-800 text-2xl">${latestTVL.toFixed(2)}</p>
+        <div className="flex flex-col lg:flex-row gap-8 w-full max-w-6xl">
+          {/* Vault Info Block */}
+          <div className="bg-gray-900 rounded-2xl shadow-lg p-8 flex-1">
+            <h2 className="text-3xl font-bold text-purple-700 mb-4 text-center">USDC Cappi Vault</h2>
+            <div className="flex flex-col sm:flex-row justify-around text-lg font-semibold mb-6">
+              <div>
+                <p className="text-gray-500">Total Value Locked</p>
+                <p className="text-purple-800 text-2xl">${latestTVL.toFixed(2)}</p>
+              </div>
+              <div>
+                <p className="text-gray-500">7-Day Yield</p>
+                <p className="text-purple-800 text-2xl">{sevenDayYield.toFixed(2)}%</p>
+              </div>
             </div>
-            <div>
-              <p className="text-gray-500">{selectedRange}-Day Yield</p>
-              <p className="text-purple-800 text-2xl">{cumulativeYield.toFixed(2)}%</p> {/* Здесь сумма yield */}
+
+            {/* Range Selector */}
+            <div className="flex justify-center space-x-4 mb-6">
+              {[7, 30, 90].map((range) => (
+                <button
+                  key={range}
+                  onClick={() => handleRangeChange(range)}
+                  className={`px-4 py-2 rounded-lg font-medium border ${
+                    selectedRange === range
+                      ? 'bg-purple-700 text-white'
+                      : 'bg-white border-gray-300 text-purple-700'
+                  } hover:bg-purple-100 transition`}
+                >
+                  {range} Days
+                </button>
+              ))}
+            </div>
+
+            {/* Chart */}
+            <div className="w-full h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
+                  <YAxis stroke="#888" tick={false} axisLine={false} />
+                  <Tooltip
+                    formatter={(value, name) => {
+                      if (name === 'Yield (%)') return [`${value.toFixed(2)}%`, name];
+                      if (name === 'TVL') return [`$${value.toLocaleString()}`, name];
+                      return [value, name];
+                    }}
+                  />
+                  <Legend />
+                  <Line type="monotone" dataKey="yieldAccumulated" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
+                  <Line type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Range Selector */}
-          <div className="flex justify-center space-x-4 mb-6">
-            {[7, 30, 90].map((range) => (
-              <button
-                key={range}
-                onClick={() => handleRangeChange(range)}
-                className={`px-4 py-2 rounded-lg font-medium border ${
-                  selectedRange === range
-                    ? 'bg-purple-700 text-white'
-                    : 'bg-white border-gray-300 text-purple-700'
-                } hover:bg-purple-100 transition`}
-              >
-                {range} Days
-              </button>
-            ))}
-          </div>
-
-          {/* Chart */}
-          <div className="w-full h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
-              
-                {/* Y-axis for TVL (left) */}
-                <YAxis yAxisId="left" stroke="#ec4899" tick={false} axisLine={false} />
-              
-                {/* Y-axis for Yield (right) */}
-                <YAxis yAxisId="right" orientation="right" stroke="#a855f7" tick={false} axisLine={false} />
-              
-                <Tooltip
-                  formatter={(value, name) => {
-                    if (name === 'Yield (%)') return [`${value.toFixed(2)}%`, name];
-                    if (name === 'TVL') return [`$${value.toLocaleString()}`, name];
-                    return [value, name];
-                  }}
-                />
-                <Legend />
-              
-                {/* Line for yield with its own Y-axis */}
-                <Line
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="yieldAccumulated"
-                  stroke="#a855f7"
-                  strokeWidth={2}
-                  name="Yield (%)"
-                />
-              
-                {/* Line for TVL with its own Y-axis */}
-                <Line
-                  yAxisId="left"
-                  type="monotone"
-                  dataKey="tvl"
-                  stroke="#ec4899"
-                  strokeWidth={2}
-                  name="TVL"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+          {/* User Dashboard Block */}
+          <div className="bg-gray-900 rounded-2xl shadow-lg p-8 w-full lg:w-[420px] flex flex-col space-y-6">
+            <h3 className="text-2xl font-bold text-purple-500 text-center">Your Dashboard</h3>
+            <div className="flex justify-between text-lg font-medium">
+              <span className="text-gray-400">Your Staked</span>
+              <span className="text-purple-400">${userStaked.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-lg font-medium">
+              <span className="text-gray-400">Your Yield</span>
+              <span className="text-purple-400">{userAccumulatedYield.toFixed(2)}%</span>
+            </div>
+            <div className="flex gap-4">
+              <button className="flex-1 bg-purple-500 text-white py-2 rounded-xl hover:bg-purple-700 transition">Deposit</button>
+              <button className="flex-1 bg-white text-purple-700 py-2 rounded-xl hover:bg-purple-100 transition">Withdraw</button>
+            </div>
+            <div className="w-full h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={filteredData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
+                  <YAxis stroke="#888" tick={false} axisLine={false} />
+                  <Tooltip formatter={(value) => [`${value.toFixed(2)}%`, 'Yield (%)']} />
+                  <Line type="monotone" dataKey="yieldAccumulated" stroke="#a855f7" strokeWidth={2} name="Yield (%)" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
