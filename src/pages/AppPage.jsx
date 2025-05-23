@@ -104,7 +104,7 @@ function AppPage() {
           {/* User Panel */}
           <div className="bg-gray-900 rounded-2xl shadow-lg p-6 flex-1 min-h-[520px]">
             <h2 className="text-3xl font-bold text-purple-700 mb-4 text-center">Your Vault Stats</h2>
-
+          
             {!walletConnected && (
               <div className="flex flex-col items-center justify-center mb-6 space-y-2">
                 <button
@@ -116,7 +116,7 @@ function AppPage() {
                 <p className="text-center text-sm text-gray-400">Connect your wallet to continue</p>
               </div>
             )}
-
+          
             {walletConnected && (
               <>
                 <div className="flex flex-col sm:flex-row justify-around text-lg font-semibold mb-4 text-center sm:text-left">
@@ -129,12 +129,12 @@ function AppPage() {
                     <p>${userYield.toFixed(2)} ({userSum.toFixed(2)}%)</p>
                   </div>
                 </div>
-
+          
                 <div className="flex justify-center gap-4 mb-4">
                   <button className="bg-purple-600 hover:bg-purple-700 px-5 py-2 rounded-xl text-white font-bold">Deposit</button>
                   <button className="bg-pink-600 hover:bg-pink-700 px-5 py-2 rounded-xl text-white font-bold">Withdraw</button>
                 </div>
-
+          
                 <div className="flex justify-center space-x-3 mb-4">
                   {[7, 30, 90].map((range) => (
                     <button
@@ -150,7 +150,7 @@ function AppPage() {
                     </button>
                   ))}
                 </div>
-
+          
                 <div className="w-full h-60">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={userData}>
