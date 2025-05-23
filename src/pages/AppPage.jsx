@@ -106,17 +106,15 @@ function AppPage() {
             <h2 className="text-3xl font-bold text-purple-700 mb-4 text-center">Your Vault Stats</h2>
 
             {!walletConnected && (
-              <>
-                <div className="flex justify-center mb-3">
-                  <button
-                    className="bg-purple-500 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-700 transition"
-                    onClick={connectWallet}
-                  >
-                    Connect Wallet
-                  </button>
-                </div>
+              <div className="flex flex-col items-center justify-center mb-6 space-y-2">
+                <button
+                  className="bg-purple-500 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-700 transition"
+                  onClick={connectWallet}
+                >
+                  Connect Wallet
+                </button>
                 <p className="text-center text-sm text-gray-400">Connect your wallet to continue</p>
-              </>
+              </div>
             )}
 
             {walletConnected && (
