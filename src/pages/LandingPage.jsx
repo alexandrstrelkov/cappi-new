@@ -33,7 +33,7 @@ function LandingPage() {
           {/* 7-Day Yield Block */}
           <div className="mb-6">
             <p className="text-sm text-gray-400">Last 7-Day APY</p>
-            <p className="text-2xl font-semibold text-purple-400">{sevenDayYield.toFixed(1)}%</p>
+            <p className="text-2xl font-semibold text-purple-400">{sevenDayYield.toFixed(2)}%</p>
           </div>
       
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
