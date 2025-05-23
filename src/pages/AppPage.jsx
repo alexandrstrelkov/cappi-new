@@ -31,6 +31,7 @@ function AppPage() {
   const latestTVL = data.length ? data[data.length - 1].tvl : 0;
   const userStaked = 2000;
   const userYield = userStaked * (userSum / 100);
+  const dailyChange = data.length >= 2 ? data[data.length - 1].yield : 0;
 
   const handleRangeChange = (range) => {
     setSelectedRange(range);
@@ -97,6 +98,9 @@ function AppPage() {
                     <Line yAxisId="left" type="monotone" dataKey="tvl" stroke="#ec4899" strokeWidth={2} name="TVL" />
                   </LineChart>
                 </ResponsiveContainer>
+              </div>
+              <div className="text-center mt-4 text-sm text-gray-400">
+                Daily Change: <span className="text-white">{dailyChange.toFixed(2)}%</span>
               </div>
             </div>
           </div>
