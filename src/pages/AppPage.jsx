@@ -103,7 +103,7 @@ function AppPage() {
 
           {/* User Panel */}
           <div className="bg-gray-900 rounded-2xl shadow-lg p-6 flex-1 min-h-[520px]">
-            <h2 className="text-2xl font-bold text-purple-700 mb-4 text-center">Your Vault Stats</h2>
+            <h2 className="text-3xl font-bold text-purple-700 mb-4 text-center">Your Vault Stats</h2>
 
             {!walletConnected && (
               <>
@@ -123,11 +123,11 @@ function AppPage() {
               <>
                 <div className="flex flex-col sm:flex-row justify-around text-lg font-semibold mb-4 text-center sm:text-left">
                   <div>
-                    <p className="text-gray-400">You Staked</p>
+                    <p className="text-gray-500">You Staked</p>
                     <p>${userStaked.toFixed(2)}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400">Your Yield</p>
+                    <p className="text-gray-500">Your Yield</p>
                     <p>${userYield.toFixed(2)} ({userSum.toFixed(2)}%)</p>
                   </div>
                 </div>
