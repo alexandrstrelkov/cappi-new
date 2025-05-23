@@ -45,7 +45,7 @@ function LandingPage() {
       {/* Footer */}
       <footer className="bg-gray-950 px-6 py-6 text-sm text-white/80 flex flex-col items-center space-y-4">
         <p className="text-center max-w-xl">
-          A secure DeFi protocol with a fixed 0.05–0.1% daily return. Stake your USDC and watch your balance grow — simple, predictable, and transparent.
+          Stake your USDC and watch your balance grow — simple, predictable, and transparent.
         </p>
         <div className="flex space-x-6 text-xl">
           <a href="https://t.me/cappi" target="_blank" rel="noopener noreferrer" className="hover:text-white">
