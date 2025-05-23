@@ -5,9 +5,18 @@ import data from '../data/data.json';
 
 function AppPage() {
   const [selectedRange, setSelectedRange] = useState(7);
+  const [walletConnected, setWalletConnected] = useState(false);
 
+  const handleRangeChange = (range) => {
+    setSelectedRange(range);
+  };
+
+  const connectWallet = () => {
+    setWalletConnected(true); // Имитируем подключение
+  };
+
+  // Данные для графика слева
   const filteredDataRaw = data.slice(-selectedRange);
-
   let simpleSum = 0;
   const filteredData = filteredDataRaw.map((entry) => {
     simpleSum += entry.yield;
@@ -17,13 +26,20 @@ function AppPage() {
     };
   });
 
+  // Данные для правого графика (всегда 30 дней)
+  const userDataRaw = data.slice(-30);
+  let userSum = 0;
+  const userData = userDataRaw.map((entry) => {
+    userSum += entry.yield;
+    return {
+      ...entry,
+      yieldAccumulated: userSum,
+    };
+  });
+
   const latestTVL = data.length ? data[data.length - 1].tvl : 0;
   const userStaked = 2000;
-  const userYield = userStaked * (simpleSum / 100);
-
-  const handleRangeChange = (range) => {
-    setSelectedRange(range);
-  };
+  const userYield = userStaked * (userSum / 100);
 
   return (
     <div className="bg-gradient-to-br from-purple-700 via-purple-800 to-pink-700 min-h-screen text-white flex flex-col justify-between">
@@ -93,31 +109,38 @@ function AppPage() {
           <div className="bg-gray-900 rounded-2xl shadow-lg p-8 flex-1">
             <h2 className="text-2xl font-bold text-purple-700 mb-4 text-center">Your Vault Stats</h2>
 
-            <div className="flex justify-center mb-6">
-              <button className="bg-purple-500 text-white font-bold px-6 py-3 rounded-2xl shadow hover:bg-purple-700 transition">
-                Connect Wallet
-              </button>
-            </div>
+            {!walletConnected && (
+              <div className="flex justify-center mb-6">
+                <button
+                  className="bg-purple-500 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:bg-purple-700 transition"
+                  onClick={connectWallet}
+                >
+                  Connect Wallet
+                </button>
+              </div>
+            )}
 
             <div className="flex flex-col sm:flex-row justify-around text-lg font-semibold mb-6 text-center sm:text-left">
               <div>
                 <p className="text-gray-400">You Staked</p>
-                <p className="text-purple-800 text-2xl">${userStaked.toFixed(2)}</p>
+                <p>${userStaked.toFixed(2)}</p>
               </div>
               <div>
                 <p className="text-gray-400">Your Yield</p>
-                <p className="text-purple-800 text-2xl">${userYield.toFixed(2)} ({simpleSum.toFixed(2)}%)</p>
+                <p>${userYield.toFixed(2)} ({userSum.toFixed(2)}%)</p>
               </div>
             </div>
 
-            <div className="flex justify-center gap-4 mb-6">
-              <button className="bg-purple-600 hover:bg-purple-700 px-5 py-2 rounded-xl text-white font-bold">Deposit</button>
-              <button className="bg-pink-600 hover:bg-pink-700 px-5 py-2 rounded-xl text-white font-bold">Withdraw</button>
-            </div>
+            {walletConnected && (
+              <div className="flex justify-center mt-4 gap-4">
+                <button className="bg-purple-600 hover:bg-purple-700 px-5 py-2 rounded-xl text-white font-bold">Deposit</button>
+                <button className="bg-pink-600 hover:bg-pink-700 px-5 py-2 rounded-xl text-white font-bold">Withdraw</button>
+              </div>
+            )}
 
-            <div className="w-full h-64">
+            <div className="w-full h-64 mt-8">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <LineChart data={userData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                   <XAxis dataKey="date" stroke="#888" tick={false} axisLine={false} />
                   <YAxis stroke="#a855f7" tick={false} axisLine={false} />
                   <Tooltip formatter={(value) => [`${value.toFixed(2)}%`, 'Yield (%)']} />
